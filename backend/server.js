@@ -4,6 +4,9 @@ const connectDB = require("./config/db");
 const userRoutes = require("./routes/userRoutes");
 const bookingRoutes = require("./routes/bookingRoutes");
 const slotRoutes = require("./routes/slotRoutes");
+const paymentRoute = require("./routes/paymentRoutes");
+const revenueRoutes = require("./routes/revenueRoutes");
+const statisticsRoutes = require("./routes/statisticsRoutes");
 
 dotenv.config(); // Load environment variables before anything else
 
@@ -14,7 +17,9 @@ app.use(express.json()); // Middleware for parsing JSON
 app.use("/api", userRoutes); // User routes
 app.use("/api", bookingRoutes); // Booking routes
 app.use("/api", slotRoutes); // Slot routes
-
+app.use("/api", paymentRoute); // Corrected payment route
+app.use("/api", revenueRoutes); // Revenue routes
+app.use("/api/statistics", statisticsRoutes);
 // Connect to MongoDB
 connectDB();
 

@@ -15,11 +15,9 @@ const DashboardContent = () => {
     });
     const [paymentIssues, setPaymentIssues] = useState([]);
 
-    // Base URL for axios
-    const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+    const API_URL = 'http://localhost:5000/api';
 
     useEffect(() => {
-        // Fetch slot information
         axios.get(`${API_URL}/slots/available`)
             .then(res => {
                 const total = res.data.length;
@@ -30,27 +28,22 @@ const DashboardContent = () => {
             })
             .catch(err => console.error(err));
 
-        // Fetch active reservations
         axios.get(`${API_URL}/bookings/active`)
             .then(res => setActiveReservations(res.data))
             .catch(err => console.error(err));
 
-        // Fetch upcoming reservations
         axios.get(`${API_URL}/bookings/upcoming`)
             .then(res => setUpcomingReservations(res.data))
             .catch(err => console.error(err));
 
-        // Fetch booking cancellations
         axios.get(`${API_URL}/bookings/cancellations`)
             .then(res => setBookingCancellations(res.data))
             .catch(err => console.error(err));
 
-        // Fetch revenue statistics
         axios.get(`${API_URL}/revenue`)
             .then(res => setRevenueStatistics(res.data))
             .catch(err => console.error(err));
 
-        // Fetch payment issues
         axios.get(`${API_URL}/payments/issues`)
             .then(res => setPaymentIssues(res.data))
             .catch(err => console.error(err));

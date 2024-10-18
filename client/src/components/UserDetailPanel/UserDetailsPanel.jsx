@@ -16,27 +16,33 @@ const UserDetailsPanel = () => {
     const [upcomingReservations, setUpcomingReservations] = useState([]);
     const [paymentInfo, setPaymentInfo] = useState([]);
 
+    // Hardcoded user ID (replace with dynamic ID as needed)
+    const userId = "YOUR_USER_ID"; // Update this to the specific user's ID
+
+    // Hardcoded API URL
+    const API_URL = 'http://localhost:5000/api';
+
     useEffect(() => {
         // Fetch user details from the backend
-        axios.get('/api/user/details')
+        axios.get(`${API_URL}/users/${userId}`)
             .then(res => setUser(res.data))
             .catch(err => console.error(err));
 
-        // Fetch user booking history
-        axios.get('/api/user/bookings')
+        // Fetch active booking history for the user
+        axios.get(`${API_URL}/bookings/active/${userId}`)
             .then(res => setBookingHistory(res.data))
             .catch(err => console.error(err));
 
-        // Fetch upcoming reservations
-        axios.get('/api/user/upcoming-reservations')
+        // Fetch upcoming reservations for the user
+        axios.get(`${API_URL}/bookings/upcoming/${userId}`)
             .then(res => setUpcomingReservations(res.data))
             .catch(err => console.error(err));
 
-        // Fetch payment information
-        axios.get('/api/user/payment-info')
+        // Fetch payment information for the user
+        axios.get(`${API_URL}/payments/${userId}`)
             .then(res => setPaymentInfo(res.data))
             .catch(err => console.error(err));
-    }, []);
+    }, [userId]);
 
     return (
         <div className="p-4 space-y-4">
@@ -52,13 +58,17 @@ const UserDetailsPanel = () => {
 
             {/* Booking History */}
             <div className="bg-gray-800 text-white p-6 rounded-lg shadow-lg">
-                <h2 className="text-xl font-bold mb-4">Booking History</h2>
+                <h2 className="text-xl font-bold mb-4">Active Booking History</h2>
                 <ul>
-                    {bookingHistory.map(history => (
-                        <li key={history.id} className="mb-2">
-                            Slot: {history.slot}, Start: {history.startTime}, End: {history.endTime}
-                        </li>
-                    ))}
+                    {bookingHistory.length > 0 ? (
+                        bookingHistory.map(history => (
+                            <li key={history._id} className="mb-2">
+                                Slot: {history.slotNumber}, Start: {new Date(history.startTime).toLocaleString()}, End: {new Date(history.endTime).toLocaleString()}
+                            </li>
+                        ))
+                    ) : (
+                        <p>No active bookings found.</p>
+                    )}
                 </ul>
             </div>
 
@@ -66,11 +76,15 @@ const UserDetailsPanel = () => {
             <div className="bg-gray-800 text-white p-6 rounded-lg shadow-lg">
                 <h2 className="text-xl font-bold mb-4">Upcoming Reservations</h2>
                 <ul>
-                    {upcomingReservations.map(reservation => (
-                        <li key={reservation.id} className="mb-2">
-                            Slot: {reservation.slot}, Date: {reservation.date}, Time: {reservation.time}
-                        </li>
-                    ))}
+                    {upcomingReservations.length > 0 ? (
+                        upcomingReservations.map(reservation => (
+                            <li key={reservation._id} className="mb-2">
+                                Slot: {reservation.slotNumber}, Date: {new Date(reservation.startTime).toLocaleString()}
+                            </li>
+                        ))
+                    ) : (
+                        <p>No upcoming reservations found.</p>
+                    )}
                 </ul>
             </div>
 
@@ -78,11 +92,15 @@ const UserDetailsPanel = () => {
             <div className="bg-gray-800 text-white p-6 rounded-lg shadow-lg">
                 <h2 className="text-xl font-bold mb-4">Payment Information</h2>
                 <ul>
-                    {paymentInfo.map(payment => (
-                        <li key={payment.id} className="mb-2">
-                            Amount: {payment.amount}, Date: {payment.date}, Status: {payment.status}
-                        </li>
-                    ))}
+                    {paymentInfo.length > 0 ? (
+                        paymentInfo.map(payment => (
+                            <li key={payment._id} className="mb-2">
+                                Amount: ${payment.amount}, Date: {new Date(payment.date).toLocaleString()}, Status: {payment.status}
+                            </li>
+                        ))
+                    ) : (
+                        <p>No payment information found.</p>
+                    )}
                 </ul>
             </div>
         </div>
